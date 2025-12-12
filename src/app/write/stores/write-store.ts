@@ -41,9 +41,10 @@ const initialForm: PublishForm = {
 	title: '',
 	md: '',
 	tags: [],
-	date: new Date().toISOString().slice(0, 10),
+	date: new Date().toISOString(),
 	summary: '',
-	hidden: false
+	hidden: false,
+	category: ''
 }
 
 export const useWriteStore = create<WriteStore>((set, get) => ({
@@ -181,9 +182,10 @@ export const useWriteStore = create<WriteStore>((set, get) => ({
 					title: blog.config.title || '',
 					md: blog.markdown,
 					tags: blog.config.tags || [],
-					date: blog.config.date || new Date().toISOString().slice(0, 10),
+					date: blog.config.date || new Date().toISOString(),
 					summary: blog.config.summary || '',
-					hidden: blog.config.hidden || false
+					hidden: blog.config.hidden || false,
+					category: blog.config.category || ''
 				},
 				images,
 				cover,
@@ -215,7 +217,7 @@ export const useWriteStore = create<WriteStore>((set, get) => ({
 		set({
 			mode: 'create',
 			originalSlug: null,
-			form: { ...initialForm, date: new Date().toISOString().slice(0, 10) },
+			form: { ...initialForm, date: new Date().toISOString() },
 			images: [],
 			cover: null
 		})
