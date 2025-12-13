@@ -135,7 +135,8 @@ export default function NavCard() {
 
 					{(form === 'full' || form === 'icons') && (
 						<>
-							{form !== 'icons' && <div className='text-secondary mt-6 text-sm uppercase'>General</div>}
+							{form !== 'icons' && <div className='text-secondary mt-6 text-sm uppercase'> 这是一个测试测试泥嚎啊哈基米南北绿豆哈哈哈哈哈哈哈哈哈 </div>}
+							{form !== 'icons' && <div className='text-secondary mt-6 text-sm uppercase'> 1范文芳为访问分3让他换热管和2二哥2er12e人g二割肉12二个二哥二哥2er给er </div>}
 
 							<div className={cn('relative mt-2 space-y-2', form === 'icons' && 'mt-0 flex items-center gap-6 space-y-0')}>
 								<motion.div
