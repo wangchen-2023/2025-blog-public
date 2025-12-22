@@ -14,7 +14,7 @@ interface Snowflake {
 }
 
 const SNOWFLAKE_IMAGES = ['/images/christmas/snowflake/1.webp', '/images/christmas/snowflake/2.webp', '/images/christmas/snowflake/3.webp']
-const DOT_RATIO = 0.65 // 圆点雪花占比（80%圆点，20%图片）
+const DOT_RATIO = 0.8 // 圆点雪花占比
 
 export default function SnowfallBackground({ zIndex, count = 125 }: { zIndex: number; count?: number }) {
 	const [snowflakes, setSnowflakes] = useState<Snowflake[]>([])
@@ -67,8 +67,8 @@ export default function SnowfallBackground({ zIndex, count = 125 }: { zIndex: nu
 					style={{
 						top: -200, // 初始垂直位置：屏幕顶部外200px（让雪花从上方进入）
 						left: `${snowflake.left}%`, // 初始水平位置
-						width: `${snowflake.size}px`, // 雪花宽度
-						height: `${snowflake.size}px` // 雪花高度
+						width: `${snowflake.size}px`, // 雪花 宽 度
+						height: `${snowflake.size}px` // 雪花 高 度
 					}}
 					initial={{ y: 0, x: 0 }} // 雪花动画初始状态：位移为0
 					animate={{
