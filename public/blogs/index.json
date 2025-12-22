@@ -1,5 +1,18 @@
 [
   {
+    "slug": "GitHub-Desktop",
+    "title": "2025-blog-public 与上游同步",
+    "tags": [
+      "GitHub Desktop",
+      "同步上游"
+    ],
+    "date": "2025-12-22T16:40",
+    "summary": "用 GitHub Desktop 进行同步上游等操作是比较方便的选择，以下整理了下，以便操作查看。",
+    "cover": "/blogs/GitHub-Desktop/e0b2ecd191fa9ccb.webp",
+    "hidden": false,
+    "category": "开源"
+  },
+  {
     "slug": "liquid-grass",
     "title": "liquid-grass",
     "tags": [
