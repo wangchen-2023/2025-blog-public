@@ -14,7 +14,7 @@ interface Snowflake {
 }
 
 const SNOWFLAKE_IMAGES = ['/images/christmas/snowflake/1.webp', '/images/christmas/snowflake/2.webp', '/images/christmas/snowflake/3.webp']
-const DOT_RATIO = 0.8 // 圆点雪花占比（80%圆点，20%图片）
+const DOT_RATIO = 0.65 // 圆点雪花占比（80%圆点，20%图片）
 
 export default function SnowfallBackground({ zIndex, count = 125 }: { zIndex: number; count?: number }) {
 	const [snowflakes, setSnowflakes] = useState<Snowflake[]>([])
