@@ -1,68 +1,162 @@
-**本篇是我遇到的问题整理，希望能帮到大家**
+> blog 前端网站（yysuni.com）已链接到 public 仓库
 
+该项目使用 Github App 管理项目内容，请保管好后续创建的 **Private key**，不要上传到公开网上。
 
-如果你在 fork 仓库时改了项目名等内容，就要把 `2025-blog-public/src/consts.ts` 中的 **所有者**、**项目名**、**分支**、**GitHub App ID**  等默认信息同步改成你的实际项目配置。
+## 0. Fork 项目
 
-在页面正上面
-![](/blogs/readme/7a9f9179f288a831.png)
+请先 fork 我的项目到你自己的仓库中。后续我的更新，可以直接同步最新功能。
 
+![](/blogs/readme/f8fb1af7c34a8cf8.webp)
 
-# 内容存储层
-内容存储层使用GitHub存储库文件结构来组织所有内容类型：
-| 路径 | 目的 | 格式 |
-|--------|------|------|   
-| public/blogs/index.json | 所有博客文章的中央清单 | 带元数据的JSON数组 |
-| public/blogs/{slug}/ | 个人博客文章目录 | 包含config.json、index.md、图像的目录 |
-| public/blogs/{slug}/config.json | 博客帖子元数据 | 带有标题、日期、标签等的JSON |
-| public/blogs/{slug}/index.md | 博客文章内容 | 标记语言 |
-| src/config/site-content.json | 全局站点配置 | JSON，带元数据、主题、关于数据 |
-| src/app/projects/list.json | 项目组合数据 | JSON数组 |
-| src/app/bloggers/list.json | 精心策划的博客列表 | 带有评级的JSON数组 |
-| src/app/share/list.json | 共享资源 | JSON数组 |
+## 1. 安装
 
+使用该项目可以先不做本地开发，直接部署然后配置环境变量。具体变量名请看下列大写变量
 
-身份验证和GitHub集成<br>
-该系统使用带有私钥的GitHub App身份验证直接从浏览器执行Git操作：
-
-# 配置常数
-文件位置位于: src/consts.ts 10-16
 ```ts
-GITHUB_CONFIG = {
-  OWNER: NEXT_PUBLIC_GITHUB_OWNER || 'yysuni'
-  REPO: NEXT_PUBLIC_GITHUB_REPO || '2025-blog-public'
-  BRANCH: NEXT_PUBLIC_GITHUB_BRANCH || 'main'
-  APP_ID: NEXT_PUBLIC_GITHUB_APP_ID || '-'
-}
-```
-身份验证流程：
-
-1. 用户通过web界面上传.pem私钥文件
-2. 密钥通过useAuthStore存储在内存中（不持久）
-3. GitHub App API调用使用私钥进行身份验证
-4. 直接提交到存储库的内容更改
-5. 基于会话的身份验证（页面刷新时密钥丢失）
-
-# 内容模型
-## 博客文章结构
-每篇博客文章都是一个自包含的目录，其结构如下：
-```md
-public/blogs/{slug}/
-├── config.json       # Metadata (title, date, description, tags)
-├── index.md          # Markdown content
-└── *.png|jpg|webp    # Image assets
+export const GITHUB_CONFIG = {
+	OWNER: process.env.NEXT_PUBLIC_GITHUB_OWNER || 'yysuni',
+	REPO: process.env.NEXT_PUBLIC_GITHUB_REPO || '2025-blog-public',
+	BRANCH: process.env.NEXT_PUBLIC_GITHUB_BRANCH || 'main',
+	APP_ID: process.env.NEXT_PUBLIC_GITHUB_APP_ID || '-'
+} as const
 ```
 
-***
+也可以自己手动先调整安装，可自行 `pnpm i`
 
-# 站点配置
-全局配置存储在src/config/site-content.json中，结构如下：
+## 2. 部署
 
-关键配置部分：
-|  |  |  |
-|--------|------|------|   
-meta：网站标题、描述、关键字（SEO）
-theme：类型颜色，背景类型
-about:关于页面内容
-social：社交媒体链接
-navigation：菜单项
-配置在构建时加载，可以通过src/app/home/config-dialog.tsx进行编辑。
+我这里熟悉 Vercel 部署，就以 Vercel 部署为例子。创建 Project => Import 这个项目
+
+![](/blogs/readme/730266f17fab9717.png)
+
+无需配置，直接点部署
+
+![](/blogs/readme/95dee9a69154d0d0.png)
+
+大约 60 秒会部署完成，有一个直接 vercel 域名，如：https://2025-blog-public.vercel.app/
+
+到这里部署网站已经完成了，下一步创建 Github App
+
+## 3. 创建 Github App 链接仓库
+
+在 github 个人设置里面，找到最下面的 Developer Settings ，点击进入
+
+![](/blogs/readme/0abb3b592cbedad6.png)
+
+进入开发者页面，点击 **New Github App**
+
+*GitHub App name* 和 *Homepage URL* , 输入什么都不影响。Webhook 也关闭，不需要。
+
+![](/blogs/readme/71dcd9cf8ec967c0.png)
+
+只需要注意设置一个仓库 write 权限，其它不用。
+
+![](/blogs/readme/2be290016e56cd34.png)
+
+点击创建，谁能安装这个仓库这个选择无所谓。直接创建。
+
+![](/blogs/readme/aa002e6805ab2d65.png)
+
+
+### 创建密钥
+
+创建好 Github App 后会提示必须创建一个 **Private Key**，直接创建，会自动下载（不见了也不要紧，后面自己再创建再下载就行）。页面上有个 **App ID** 需要复制一下
+
+再切换到安装页面
+
+![](/blogs/readme/c122b1585bb7a46a.png)
+
+这里一定要只**授权当前项目**。
+
+![](/blogs/readme/2cf1cee3b04326f1.png)
+
+点击安装，就完成了 Github App 管理该仓库的权限设置了。下一步就是让前端知道推送那个项目，就是最开始提到的**环境变量**。（如果你不会设置环境变量，直接改仓库文件 `src/consts.ts` 也行。因为是公开的，所以环境变量意义也不大）
+
+### 环境变量
+
+直接输入这几个环境变量值就行，一般只用设置 OWNER 和 APP_ID。其它配置不用管，直接输入创建就行。
+
+![](/blogs/readme/c5a049d737848abf.png)
+
+设置完成后，需要手动再部署一次，让环境变量生效。
+* 可以直接 push 一次仓库代码会触发部署
+* 也可以手动选择创建一次部署
+![](/blogs/readme/59a802ed8d1c3a13.png)
+
+## 4. 完成
+
+现在，部署的这个网站就可以开始使用前端改内容了。比如更改一个分享内容。
+
+**提示**，网站前端页面删改完提示成功之后，你需要等待后台的部署完成，再刷新页面才能完成服务器内容的更新哦。
+
+## 5. 删除
+
+使用这个项目应该第一件事需要删除我的 blog，单独删除，批量删除已完成。
+
+## 6. 配置
+
+大部分页面右上角都会有一个编辑按钮，意味着你可以使用 **private key** 进行配置部署。
+
+### 6.1 网站配置
+
+首页有一个不显眼的配置按钮，点击就能看到现在可以配置的内容。
+
+![](/blogs/readme/cddb4710e08a5069.png)
+
+## 7. 写 blog
+
+写 blog 的图片管理，可能会有疑惑。图片管理推荐逻辑是先点击 **+ 号** 添加图片，（推荐先压缩好，尺寸推荐宽度不超过 1200）。然后将上传好的图片直接拖入文案编辑区，这就已经添加好了，点击右上角预览就可以看到效果。
+
+## 8. 写给非前端
+
+非前端配置内容，还是需要一个文件指引。下面写一些更细致的代码配置。
+
+### 8.1 移除 Liquid Grass
+
+> 已移动至相关文章中显示，图例已过时
+
+![](/blogs/readme/f70ff3fe3a77f193.png)
+
+### 8.2 配置首页内容
+
+首页的内容现在只能前端配置一部分，所以代码更改在 `src/app/(home)` 目录，这个目录代表首页所有文件。首页的具体文件为  `src/app/(home)/page.tsx`
+
+ ![](/blogs/readme/011679cd9bf73602.png)
+
+这里可以看到有很多 `Card` 文件，需要改那个首页 Card 内容就可以点入那个具体文件修改。
+
+比如中间的内容，为 `HiCard`，点击 `hi-card.tsx` 文件，即可更改其内容。
+
+![](/blogs/readme/20b0791d012163ee.png)
+
+#### 特殊的导航 Card
+
+因为这个 Card 是全局都在的，所以放在了 `src/components` 目录
+
+![](/blogs/readme/9780c38f886322fd.png)
+
+### 8.3 移除 blog 列表的更多按钮
+
+`src/app/blog/page.tsx` 文件，下图位置，删除这部分代码。
+
+![](/blogs/readme/a190410a273b2bea.png)
+
+## 9. 互助群
+
+对于完全不是**程序员**的用户，确实会对于更新代码后，如何同步，如何**合并代码**手足无措。我创建了一个 **QQ群**（加群会简单点），或者 vx 群还是 tg 群会好一点可以 issue 里面说下就行。
+
+QQ 群：[https://qm.qq.com/q/spdpenr4k2](https://qm.qq.com/q/spdpenr4k2)
+> 不好意思，之前的那个qq群ID 不知道为啥搜不到😂
+
+微信群：刚建好了一个微信群，没有 qq 的可以用这个微信群
+![](/blogs/readme/1e38ea817ede4f75.webp)
+
+应该主要是我自己亲自帮助你们遇到问题怎么办。（后续看看有没有好心人）
+
+希望多多的非程序员加入 blogger 行列，web blog 还是很好玩的，属于自己的 blog 世界。
+
+游戏资产不一定属于你的，你只有**使用权**，但这个 blog **网站、内容、仓库一定是属于你的**
+
+## 友链
+
+既然你已经看到这了，应该创建好，或者有你自己的 blog 了，那就提一个友链 pr 吧。我会主观评价你的 blog 打分。😁 
