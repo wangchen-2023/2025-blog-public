@@ -8,7 +8,7 @@
 ## 1. 给仓库加上“上游”遥控器（只做一次）
 
 1. 打开 **GitHub Desktop**  官网下载：https://desktop.github.com
-2. 顶部菜单 → Repository → **Open in Command Prompt**（或 Git Bash）  
+2. 顶部菜单 → 存储库 → **在命令行中打开**（或 Git Bash）  
 3. 输入下面命令后回车：
 
 ```bash
