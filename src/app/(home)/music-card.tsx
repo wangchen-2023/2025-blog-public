@@ -32,7 +32,7 @@ const MUSIC_LIST = [
     id: 2,
     title: "冬日序曲",
     artist: "冬日乐队",
-    src: "/music/winter.m4a",
+    src: "/music/christmas.m4a",
     cover: "/images/christmas/cover2.jpg",
     lyrics: [
       ["00:00.000", "冬日的风 吹过窗边"],
@@ -46,7 +46,7 @@ const MUSIC_LIST = [
     id: 3,
     title: "雪之梦",
     artist: "钢琴诗人",
-    src: "/music/snow-dream.m4a",
+    src: "/music/christmas.m4a",
     cover: "/images/christmas/cover3.jpg",
     lyrics: [
       ["00:00.000", "纯音乐：雪之梦"],
