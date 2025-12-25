@@ -8,11 +8,11 @@ import MusicSVG from '@/svgs/music.svg'
 import { HomeDraggableLayer } from './home-draggable-layer'
 import { Pause, Play, SkipBack, SkipForward } from 'lucide-react'
 
-// 歌曲列表配置
+// 歌曲列表
 const SONGS = [
 	{ title: '圣诞音乐', url: '/music/christmas.m4a' },
-	{ title: '新年序曲', url: '/music/newyear.m4a' },
-	{ title: '冬日暖歌', url: '/music/winter.m4a' },
+	{ title: '新年序曲', url: '/music/christmas.m4a' },
+	{ title: '冬日暖歌', url: '/music/christmas.m4a' },
 ]
 
 export default function MusicCard() {
@@ -25,11 +25,11 @@ export default function MusicCard() {
 	const [progress, setProgress] = useState(0)
 	const audioRef = useRef<HTMLAudioElement | null>(null)
 
-	// --- 坐标调整：直接使用你提供的 695px 和 405px ---
+	// 使用你提供的精确坐标
 	const x = 695
 	const y = 405
 
-	// 初始化与进度监听
+	// 初始化音频逻辑
 	useEffect(() => {
 		if (!audioRef.current) audioRef.current = new Audio()
 		const audio = audioRef.current
@@ -42,12 +42,13 @@ export default function MusicCard() {
 
 		audio.addEventListener('timeupdate', updateProgress)
 		audio.addEventListener('ended', () => nextSong())
+		
 		return () => {
 			audio.removeEventListener('timeupdate', updateProgress)
 		}
 	}, [])
 
-	// 切换歌曲逻辑
+	// 监听切歌
 	useEffect(() => {
 		if (audioRef.current) {
 			audioRef.current.src = SONGS[currentIndex].url
@@ -56,21 +57,24 @@ export default function MusicCard() {
 		}
 	}, [currentIndex])
 
-	// 播放暂停逻辑
+	// 监听播放/暂停状态
 	useEffect(() => {
 		if (!audioRef.current) return
-		isPlaying ? audioRef.current.play().catch(console.error) : audioRef.current.pause()
+		if (isPlaying) {
+			audioRef.current.play().catch(console.error)
+		} else {
+			audioRef.current.pause()
+		}
 	}, [isPlaying])
 
 	const nextSong = () => setCurrentIndex((prev) => (prev + 1) % SONGS.length)
 	const prevSong = () => setCurrentIndex((prev) => (prev - 1 + SONGS.length) % SONGS.length)
 
-	// 点击卡片背景调节进度
+	// 点击卡片背景跳转进度
 	const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (!audioRef.current || !audioRef.current.duration) return
 		const rect = e.currentTarget.getBoundingClientRect()
 		const clickX = e.clientX - rect.left
-		// 计算点击位置相对于卡片总宽度的比例
 		const newTime = (clickX / rect.width) * audioRef.current.duration
 		audioRef.current.currentTime = newTime
 	}
@@ -86,15 +90,15 @@ export default function MusicCard() {
 				className='relative flex items-center px-4 overflow-hidden group cursor-pointer'
 				onClick={handleSeek}
 			>
-				{/* 进度条背景染色：点击背景跳转进度的视觉反馈 */}
+				{/* 背景进度染色层 */}
 				<div 
 					className="absolute inset-0 pointer-events-none transition-all duration-300"
 					style={{
-						background: `linear-gradient(to right, rgba(255,255,255,0.1) ${progress}%, transparent ${progress}%)`
+						background: `linear-gradient(to right, rgba(255,255,255,0.12) ${progress}%, transparent ${progress}%)`
 					}}
 				/>
 
-				{/* 圣诞雪堆装饰：保持 z-index 确保在最上层 */}
+				{/* 圣诞装饰 */}
 				{siteContent.enableChristmas && (
 					<>
 						<img src='/images/christmas/snow-10.webp' alt='snow' className='pointer-events-none absolute left-[-8px] top-[-14px] z-30 w-[110px]' />
@@ -102,23 +106,23 @@ export default function MusicCard() {
 					</>
 				)}
 
-				{/* 左侧：音乐图标 */}
+				{/* 图标 */}
 				<MusicSVG className='relative z-10 h-8 w-8 shrink-0 mr-4' />
 
-				{/* 中间：歌名 + 辅助进度细条 */}
+				{/* 歌名与进度细条 */}
 				<div className='relative z-10 flex-1 min-w-0 flex flex-col justify-center'>
 					<div className='truncate text-sm font-medium text-white select-none'>
 						{SONGS[currentIndex].title}
 					</div>
 					<div className='mt-2 h-1 w-24 rounded-full bg-white/20 overflow-hidden'>
-						<div className='h-full bg-white' style={{ width: `${progress}%` }} />
+						<div className='h-full bg-white transition-all duration-100' style={{ width: `${progress}%` }} />
 					</div>
 				</div>
 
-				{/* 右侧：物理控制按钮组 */}
+				{/* 按钮组 */}
 				<div 
 					className='relative z-40 flex items-center gap-2 ml-2' 
-					onClick={(e) => e.stopPropagation()} // 阻止冒泡，防止点击按钮时误触进度调节
+					onClick={(e) => e.stopPropagation()} 
 				>
 					<button onClick={prevSong} className='p-1 text-white/50 hover:text-white transition-all active:scale-90'>
 						<SkipBack size={18} fill="currentColor" />
@@ -138,4 +142,4 @@ export default function MusicCard() {
 			</Card>
 		</HomeDraggableLayer>
 	)
-}-
+}
