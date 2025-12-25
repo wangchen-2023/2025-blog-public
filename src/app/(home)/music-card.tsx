@@ -26,7 +26,7 @@ export default function MusicCard() {
 	const audioRef = useRef<HTMLAudioElement | null>(null)
 
 	// 使用你提供的精确坐标
-	const x = 788
+	const x = 865
 	const y = 405
 
 	// 初始化音频逻辑
