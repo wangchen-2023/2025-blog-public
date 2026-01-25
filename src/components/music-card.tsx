@@ -1,18 +1,21 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import Card from '@/components/card'
 import { useCenterStore } from '@/hooks/use-center'
-import { useConfigStore } from './stores/config-store'
+import { useConfigStore } from '../app/(home)/stores/config-store'
 import { CARD_SPACING } from '@/consts'
 import MusicSVG from '@/svgs/music.svg'
 import PlaySVG from '@/svgs/play.svg'
-import { HomeDraggableLayer } from './home-draggable-layer'
+import { HomeDraggableLayer } from '../app/(home)/home-draggable-layer'
 import { Pause } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import clsx from 'clsx'
 
-const MUSIC_FILES = ['/music/christmas.m4a', '/music/2.mp3']
+const MUSIC_FILES = ['/music/close-to-you.mp3']
 
 export default function MusicCard() {
+	const pathname = usePathname()
 	const center = useCenterStore()
 	const { cardStyles, siteContent } = useConfigStore()
 	const styles = cardStyles.musicCard
@@ -30,8 +33,25 @@ export default function MusicCard() {
 	const clickCountRef = useRef(0)
 	const clickTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-	const x = styles.offsetX !== null ? center.x + styles.offsetX : center.x + CARD_SPACING + hiCardStyles.width / 2 - styles.offset
-	const y = styles.offsetY !== null ? center.y + styles.offsetY : center.y - clockCardStyles.offset + CARD_SPACING + calendarCardStyles.height + CARD_SPACING
+	const isHomePage = pathname === '/'
+
+	const position = useMemo(() => {
+		// If not on home page, always position at bottom-right corner when playing
+		if (!isHomePage) {
+			return {
+				x: center.width - styles.width - 16,
+				y: center.height - styles.height - 16
+			}
+		}
+
+		// Default position on home page
+		return {
+			x: styles.offsetX !== null ? center.x + styles.offsetX : center.x + CARD_SPACING + hiCardStyles.width / 2 - styles.offset,
+			y: styles.offsetY !== null ? center.y + styles.offsetY : center.y - clockCardStyles.offset + CARD_SPACING + calendarCardStyles.height + CARD_SPACING
+		}
+	}, [isPlaying, isHomePage, center, styles, hiCardStyles, clockCardStyles, calendarCardStyles])
+
+	const { x, y } = position
 
 	useEffect(() => {
 		if (!audioRef.current) audioRef.current = new Audio()
@@ -106,17 +126,14 @@ export default function MusicCard() {
 		}, 300) // 300ms 内的点击判定为连续点击
 	}
 
+	// Hide component if not on home page and not playing
+	if (!isHomePage && !isPlaying) {
+		return null
+	}
+
 	return (
 		<HomeDraggableLayer cardKey='musicCard' x={x} y={y} width={styles.width} height={styles.height}>
-			<Card 
-				order={styles.order} 
-				width={styles.width} 
-				height={styles.height} 
-				x={x} 
-				y={y} 
-				className='flex items-center gap-3 cursor-pointer select-none'
-				onClick={handleCardInteraction} // 卡片点击判定
-			>
+			<Card order={styles.order} width={styles.width} height={styles.height} x={x} y={y} className={clsx('flex items-center gap-3', !isHomePage && 'fixed')}>
 				{siteContent.enableChristmas && (
 					<>
 						<img src='/images/christmas/snow-10.webp' alt='decoration' className='pointer-events-none absolute' style={{ width: 120, left: -8, top: -12, opacity: 0.8 }} />
@@ -127,9 +144,7 @@ export default function MusicCard() {
 				<MusicSVG className='h-8 w-8 pointer-events-none' />
 
 				<div className='flex-1'>
-					<div className='text-secondary text-sm font-medium'>
-						{currentIndex === 0 ? '圣诞音乐' : `歌曲 ${currentIndex + 1}`}
-					</div>
+					<div className='text-secondary text-sm'>Close To You</div>
 
 					{/* 进度条容器：增加了 padding 增大点击热区，并添加点击事件 */}
 					<div 
