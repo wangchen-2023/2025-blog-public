@@ -1,5 +1,17 @@
 [
   {
+    "slug": "mysql",
+    "title": "mysql创建",
+    "tags": [
+      "datebase",
+      "table"
+    ],
+    "date": "2026-03-05T14:47",
+    "summary": "和excel“互联”的数据库创建\n",
+    "hidden": false,
+    "category": ""
+  },
+  {
     "slug": "HAPPY NEW YEAR",
     "title": "新年快乐",
     "tags": [],
