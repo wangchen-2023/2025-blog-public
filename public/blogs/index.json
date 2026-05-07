@@ -1,5 +1,14 @@
 [
   {
+    "slug": "database-1",
+    "title": "查询数据库-1",
+    "tags": [],
+    "date": "2026-05-07T18:34",
+    "summary": "",
+    "hidden": false,
+    "category": ""
+  },
+  {
     "slug": "vue",
     "title": "创建与启动Vue项目",
     "tags": [],
